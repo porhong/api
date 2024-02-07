@@ -20,11 +20,13 @@ const createUser = (req, res) => {
 };
 
 //Get User by User ID
-const getUser = (req, res) => {
-  Users.findAll({ where: { id: req.params.id } })
+const getUser = async (req, res) => {
+  await Users.findAll({ where: { id: req.params.id } })
     .then((result) => {
       if (result.length == 0) {
-        return res.json({ message: "Record not found" });
+        return res
+          .status(404)
+          .json({ success: 0, message: "Record not found" });
       } else {
         return res.json({
           result,
@@ -42,8 +44,8 @@ const getUser = (req, res) => {
     });
 };
 //Get All User
-const getAllUsers = (req, res) => {
-  Users.findAll()
+const getAllUsers = async (req, res) => {
+  await Users.findAll()
     .then((result) => {
       if (result.length == 0) {
         return res.json({ message: "Record not found" });
@@ -68,8 +70,9 @@ const editUser = (req, res) => {
   const userData = req.body;
   Users.update(userData, { where: { id: req.params.id } })
     .then((result) => {
-      if (result == [1]) {
-        return res.json({ success: 1, message: result });
+      console.log(result);
+      if (result[0] == 1) {
+        return res.json({ success: 1, message: "User updated successfully." });
       } else {
         return res.json({ success: 0, message: "User not found." });
       }
@@ -84,7 +87,7 @@ const deleteUser = (req, res) => {
   Users.destroy({ where: { id: req.params.id } })
     .then((result) => {
       if (result == [1]) {
-        return res.json({ success: 1, message: "User Deleted." });
+        return res.json({ success: 1, message: "User deleted successfully." });
       } else {
         return res.json({ success: 0, message: "User not found." });
       }
