@@ -20,7 +20,7 @@ const jwtVerify = (req, res, next) => {
       if (err.message == "invalid token") {
         return res.json({
           success: 0,
-          message: "Authentication failed",
+          message: "Authentication failed by token invalid",
         });
       } else if (err.message == "jwt expired") {
         return res.json({
