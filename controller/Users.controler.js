@@ -1,8 +1,11 @@
 const { Users } = require("../models");
+const { genRefreshToken } = require("../controller/Token.controller");
 
 //Create a new User
 const createUser = (req, res) => {
   const userData = req.body;
+  const user = { user_name: userData.user_name, password: userData.password };
+  userData.token = genRefreshToken(user);
   Users.create(userData)
     .then((result) => {
       return res.json({

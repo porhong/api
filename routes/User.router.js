@@ -8,11 +8,12 @@ const {
   editUser,
   deleteUser,
 } = require("../controller/Users.controler");
+const { VerifyAccessToken } = require("../controller/Verifytoken.controller");
 
-router.post("/", createUser);
-router.get("/", getAllUsers);
-router.get("/:id", getUser);
-router.put("/:id", editUser);
-router.delete("/:id", deleteUser);
+router.post("/", VerifyAccessToken(), createUser);
+router.get("/", VerifyAccessToken(), getAllUsers);
+router.get("/:id", VerifyAccessToken(), getUser);
+router.put("/:id", VerifyAccessToken(), editUser);
+router.delete("/:id", VerifyAccessToken(), deleteUser);
 
 module.exports = router;

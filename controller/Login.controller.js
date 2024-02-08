@@ -18,12 +18,21 @@ const login = async (req, res) => {
       //Sign Token
       const accessToken = genAccessToken(userData);
       const refreshToken = genRefreshToken(userData);
-      return res.json({
-        success: 1,
-        message: "User Valid",
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      });
+      Users.update(
+        { token: refreshToken },
+        {
+          where: { user_name: userData.user_name },
+        }
+      )
+        .then((tokens) => {
+          return res.json({
+            success: 1,
+            message: "User Valid",
+            access_token: accessToken,
+            refresh_token: refreshToken,
+          });
+        })
+        .catch((err) => console.log("error: " + err));
     } else {
       return res.json({
         success: 0,
