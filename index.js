@@ -4,7 +4,12 @@ const port = 3001;
 const db = require("./models");
 const userRouter = require("./routes/User.router");
 const loginRouter = require("./routes/Login.router");
+const tokenRouter = require("./routes/Token.router");
+const cookieParser = require("cookie-parser");
 require("dotenv").config();
+
+// add cookieParser to express :
+app.use(cookieParser(process.env.JWT_SECRET_KEY));
 
 //====================================JWT token verify========================================
 const {
@@ -21,6 +26,7 @@ try {
   app.use(express.json());
   app.use("/api/users", VerifyAccessToken(), userRouter);
   app.use("/api/login", loginRouter);
+  app.use("/api/token", tokenRouter);
 } catch (e) {
   console.error("Error ⛔ : " + e);
 }

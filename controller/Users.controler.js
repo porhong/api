@@ -1,9 +1,17 @@
 const { Users } = require("../models");
 const { genRefreshToken } = require("../controller/Token.controller");
+var bcrypt = require("bcryptjs");
 
 //Create a new User
 const createUser = (req, res) => {
   const userData = req.body;
+
+  //hashing password
+  var salt = bcrypt.genSaltSync(5);
+  var hash = bcrypt.hashSync(userData.password, salt);
+  userData.password = hash;
+  //=====================================================
+
   const user = { user_name: userData.user_name, password: userData.password };
   userData.token = genRefreshToken(user);
   Users.create(userData)
@@ -14,7 +22,7 @@ const createUser = (req, res) => {
       });
     })
     .catch((error) => {
-      console.log("Error Code : " + error.original.code);
+      console.log("Error Code : " + error.original.message);
       return res.json({
         success: 0,
         message: "Can not create user",
@@ -31,13 +39,14 @@ const getUser = async (req, res) => {
           .status(404)
           .json({ success: 0, message: "Record not found" });
       } else {
+        result = result[0];
         return res.json({
           result,
         });
       }
     })
     .catch((error) => {
-      console.log("Error Code : " + error.original.code);
+      console.log("Error Code : " + error);
       return () => {
         res.json({
           message: "Error : " + error.original.sqlMessage,
