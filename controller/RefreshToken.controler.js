@@ -6,7 +6,7 @@ const { genAccessToken, genRefreshToken } = require("./Token.controller");
 const cookieConfig = {
   httpOnly: true, // to disable accessing cookie via client side js
   //secure: true, // to force https (if you use it)
-  maxAge: 1000000, // ttl in seconds (remove this option and cookie will die when browser is closed)
+  maxAge: 86400, // ttl in seconds (remove this option and cookie will die when browser is closed)
   signed: true, // if you use the secret with cookieParser
 };
 //Check validation Refresh token
@@ -47,7 +47,7 @@ function VerifyRefreshToken(refreshToken) {
 const refreshToken = (req, res) => {
   //const Token = req.body;
   const Token = req.signedCookies;
-  if (Token.refreshToken != {}) {
+  if (Token.refreshToken !== undefined) {
     Users.findOne({
       where: { token: Token.refreshToken },
       attributes: ["user_name", "password"],

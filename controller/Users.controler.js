@@ -7,7 +7,7 @@ const createUser = (req, res) => {
   const userData = req.body;
 
   //hashing password
-  var salt = bcrypt.genSaltSync(5);
+  var salt = bcrypt.genSaltSync(10);
   var hash = bcrypt.hashSync(userData.password, salt);
   userData.password = hash;
   //=====================================================

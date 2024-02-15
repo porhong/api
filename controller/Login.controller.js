@@ -5,7 +5,7 @@ var bcrypt = require("bcryptjs");
 const cookieConfig = {
   httpOnly: true, // to disable accessing cookie via client side js
   //secure: true, // to force https (if you use it)
-  maxAge: 1000000, // ttl in seconds (remove this option and cookie will die when browser is closed)
+  maxAge: 86400, // ttl in seconds (remove this option and cookie will die when browser is closed)
   signed: true, // if you use the secret with cookieParser
 };
 
@@ -13,13 +13,7 @@ const login = async (req, res) => {
   const userData = req.body;
 
   if (userData != {}) {
-    //hashing password
-    var salt = bcrypt.genSaltSync(5);
-    var hash = bcrypt.hashSync(userData.password, salt);
-    userData.password = hash;
-    //=====================================================
     //Find User Object
-    console.log(userData);
     const userQurey = await Users.findOne({
       where: {
         user_name: userData.user_name,
@@ -27,18 +21,38 @@ const login = async (req, res) => {
       },
       attributes: ["user_name", "password"],
     });
+
     if (userQurey != null) {
-      let check_pass = bcrypt.compareSync(
-        userQurey.password,
-        userData.password
-      );
-      if (check_pass == true) {
+      let input_password = userData.password;
+      let hash_password = userQurey.password;
+      let check_pass = await bcrypt
+        .compare(input_password, hash_password)
+        .then(function (result) {
+          return result;
+        });
+
+      if (check_pass) {
         //Sign Token
         const accessToken = genAccessToken(userData);
         const refreshToken = genRefreshToken(userData);
         //Create Cookie
+        res.clearCookie("refreshToken", { path: "/" });
         res.cookie("refreshToken", refreshToken, cookieConfig);
         //=====================================================
+        //Update Token on DB
+        Users.update(
+          { token: refreshToken },
+          {
+            where: { user_name: userData.user_name },
+          }
+        );
+        //=====================================================
+        return res.json({
+          success: 1,
+          message: "Login Success",
+          accessToken,
+          refreshToken,
+        });
       } else {
         return res.json({ success: 0, message: "Incorrect password" });
       }
