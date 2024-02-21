@@ -82,7 +82,6 @@ const editUser = (req, res) => {
   const userData = req.body;
   Users.update(userData, { where: { id: req.params.id } })
     .then((result) => {
-      console.log(result);
       if (result[0] == 1) {
         return res.json({ success: 1, message: "User updated successfully." });
       } else {

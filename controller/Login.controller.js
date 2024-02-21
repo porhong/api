@@ -2,6 +2,7 @@ const { Users } = require("../models");
 require("dotenv").config();
 const { genAccessToken, genRefreshToken } = require("./Token.controller");
 var bcrypt = require("bcryptjs");
+//========================Cookie Configuration========================================
 const cookieConfig = {
   httpOnly: true, // to disable accessing cookie via client side js
   //secure: true, // to force https (if you use it)

@@ -5,6 +5,7 @@ const db = require("./models");
 const userRouter = require("./routes/User.router");
 const loginRouter = require("./routes/Login.router");
 const tokenRouter = require("./routes/Token.router");
+const movieRouter = require("./routes/Movie.router");
 const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
@@ -27,6 +28,7 @@ try {
   app.use("/api/users", VerifyAccessToken(), userRouter);
   app.use("/api/login", loginRouter);
   app.use("/api/token", tokenRouter);
+  app.use("/api/movie", VerifyAccessToken(), movieRouter);
 } catch (e) {
   console.error("Error ⛔ : " + e);
 }
