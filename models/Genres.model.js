@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     genre_name: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
   });
   //============================Relationship================================

@@ -1,8 +1,9 @@
 module.exports = (sequelize, DataTypes) => {
   const Categories = sequelize.define("Categories", {
-    country_name: {
+    category_name: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
   });
   //============================Relationship================================

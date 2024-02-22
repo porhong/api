@@ -3,6 +3,7 @@ module.exports = (sequelize, DataTypes) => {
     country_name: {
       type: DataTypes.STRING,
       allowNull: false,
+      unique: true,
     },
   });
   //============================Relationship================================

@@ -63,7 +63,7 @@ const refreshToken = (req, res) => {
             let new_AccessToken = genAccessToken(result.dataValues);
             let new_RefreshToken = genRefreshToken(result.dataValues);
             //Update the refresh token
-            res.clearCookie("refreshToken", { path: "/" });
+            //res.clearCookie("refreshToken", { path: "/" });
             res.cookie("refreshToken", new_RefreshToken, cookieConfig);
             //===========================================================
             Users.update(

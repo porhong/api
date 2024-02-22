@@ -1,35 +1,42 @@
-const { Movies } = require("../models");
+const { Genres } = require("../models");
 
 //Create a new User
-const createMovie = (req, res) => {
-  const movieData = req.body;
-  Movies.create(movieData)
+const createGenre = (req, res) => {
+  const GenreData = req.body;
+  Genres.create(GenreData)
     .then((result) => {
       return res.json({
         success: 1,
-        message: "Movie created successfully",
+        message: "Genre created successfully",
       });
     })
     .catch((error) => {
-      console.log("Error Code : " + error);
-      return res.json({
-        success: 0,
-        message: "Can not create movie",
-      });
+      console.log("Error Code : " + error.original.code);
+      if (error.original.code == "ER_DUP_ENTRY") {
+        return res.json({
+          status: 0,
+          message: "Genre already existed",
+        });
+      } else {
+        return res.json({
+          success: 0,
+          message: "Can not create genre",
+        });
+      }
     });
 };
 
 //Get User by User ID
-const getMovie = async (req, res) => {
-  await Movies.findAll({ where: { id: req.params.id } })
+const getGenre = async (req, res) => {
+  await Genres.findAll({ where: { id: req.params.id } })
     .then((result) => {
       if (result.length == 0) {
-        return res.status(404).json({ status: 0, message: "Movie not found" });
+        return res.status(404).json({ status: 0, message: "Genre not found" });
       } else {
         result = result[0];
         return res.json({
           status: 1,
-          message: "Movie retrieve successfully",
+          message: "Genre retrieve successfully",
           result,
         });
       }
@@ -47,15 +54,15 @@ const getMovie = async (req, res) => {
 };
 
 //Get All User
-const getAllMovies = async (req, res) => {
-  await Movies.findAll()
+const getAllGenres = async (req, res) => {
+  await Genres.findAll()
     .then((result) => {
       if (result.length == 0) {
-        return res.json({ message: "Movie not found" });
+        return res.json({ message: "Genre not found" });
       } else {
         return res.json({
           status: 1,
-          message: "Movie retrieve successfully",
+          message: "Genre retrieve successfully",
           result,
         });
       }
@@ -73,14 +80,14 @@ const getAllMovies = async (req, res) => {
 };
 
 //Edit User By User ID
-const editMovie = (req, res) => {
-  const movieData = req.body;
-  Movies.update(movieData, { where: { id: req.params.id } })
+const editGenre = (req, res) => {
+  const GenreData = req.body;
+  Genres.update(GenreData, { where: { id: req.params.id } })
     .then((result) => {
       if (result[0] == 1) {
-        return res.json({ status: 1, message: "Movie updated successfully" });
+        return res.json({ status: 1, message: "Genre updated successfully" });
       } else {
-        return res.json({ status: 0, message: "Movie not found" });
+        return res.json({ status: 0, message: "Genre not found" });
       }
     })
     .catch((error) => {
@@ -90,13 +97,13 @@ const editMovie = (req, res) => {
 };
 
 //Delete User By User ID
-const deleteMovie = (req, res) => {
-  Movies.destroy({ where: { id: req.params.id } })
+const deleteGenre = (req, res) => {
+  Genres.destroy({ where: { id: req.params.id } })
     .then((result) => {
       if (result == [1]) {
-        return res.json({ status: 1, message: "Movie deleted successfully" });
+        return res.json({ status: 1, message: "Genre deleted successfully" });
       } else {
-        return res.json({ status: 0, message: "Movie not found" });
+        return res.json({ status: 0, message: "Genre not found" });
       }
     })
     .catch((error) => {
@@ -106,9 +113,9 @@ const deleteMovie = (req, res) => {
 };
 
 module.exports = {
-  createMovie,
-  getMovie,
-  getAllMovies,
-  editMovie,
-  deleteMovie,
+  createGenre,
+  getGenre,
+  getAllGenres,
+  editGenre,
+  deleteGenre,
 };

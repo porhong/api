@@ -17,16 +17,23 @@ const createUser = (req, res) => {
   Users.create(userData)
     .then((result) => {
       return res.json({
-        success: 1,
-        message: "Record created successfully!",
+        status: 1,
+        message: "User created successfully",
       });
     })
     .catch((error) => {
       console.log("Error Code : " + error.original.message);
-      return res.json({
-        success: 0,
-        message: "Can not create user",
-      });
+      if (error.original.code == "ER_DUP_ENTRY") {
+        return res.json({
+          status: 0,
+          message: "User already existed",
+        });
+      } else {
+        return res.json({
+          status: 0,
+          message: "Can not create user",
+        });
+      }
     });
 };
 
@@ -35,12 +42,12 @@ const getUser = async (req, res) => {
   await Users.findAll({ where: { id: req.params.id } })
     .then((result) => {
       if (result.length == 0) {
-        return res
-          .status(404)
-          .json({ success: 0, message: "Record not found" });
+        return res.status(404).json({ status: 0, message: "User not found" });
       } else {
         result = result[0];
         return res.json({
+          status: 1,
+          message: "User retrieve successfully",
           result,
         });
       }
@@ -49,6 +56,7 @@ const getUser = async (req, res) => {
       console.log("Error Code : " + error);
       return () => {
         res.json({
+          ststus: 0,
           message: "Error : " + error.original.sqlMessage,
         }),
           res.status(500);
@@ -60,9 +68,12 @@ const getAllUsers = async (req, res) => {
   await Users.findAll()
     .then((result) => {
       if (result.length == 0) {
-        return res.json({ message: "Record not found" });
+        return res.json({ message: "User not found" });
       } else {
+        result = result[0];
         return res.json({
+          status: 1,
+          message: "User retrieve successfully",
           result,
         });
       }
@@ -71,6 +82,7 @@ const getAllUsers = async (req, res) => {
       console.log("Error Code : " + error.original.code);
       return () => {
         res.json({
+          status: 0,
           message: "Error : " + error.original.sqlMessage,
         }),
           res.status(500);
@@ -83,14 +95,14 @@ const editUser = (req, res) => {
   Users.update(userData, { where: { id: req.params.id } })
     .then((result) => {
       if (result[0] == 1) {
-        return res.json({ success: 1, message: "User updated successfully." });
+        return res.json({ status: 1, message: "User updated successfully" });
       } else {
-        return res.json({ success: 0, message: "User not found." });
+        return res.json({ status: 0, message: "User not found" });
       }
     })
     .catch((error) => {
       console.log(error);
-      return res.json({ success: 0, message: error });
+      return res.json({ status: 0, message: error });
     });
 };
 //Delete User By User ID
@@ -98,14 +110,14 @@ const deleteUser = (req, res) => {
   Users.destroy({ where: { id: req.params.id } })
     .then((result) => {
       if (result == [1]) {
-        return res.json({ success: 1, message: "User deleted successfully." });
+        return res.json({ status: 1, message: "User deleted successfully" });
       } else {
-        return res.json({ success: 0, message: "User not found." });
+        return res.json({ status: 0, message: "User not found" });
       }
     })
     .catch((error) => {
       console.log(error);
-      return res.json({ success: 0, message: error });
+      return res.json({ status: 0, message: error });
     });
 };
 
