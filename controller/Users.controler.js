@@ -70,7 +70,6 @@ const getAllUsers = async (req, res) => {
       if (result.length == 0) {
         return res.json({ message: "User not found" });
       } else {
-        result = result[0];
         return res.json({
           status: 1,
           message: "User retrieve successfully",
